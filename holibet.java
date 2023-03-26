@@ -1,4 +1,37 @@
-heroku create --buildpack https://github.com/heroku/heroku-buildpack-java.git
+$ ls
+Procfile pom.xml src
+
+$ echo "java.runtime.version=1.8" > system.properties
+
+$ git add system.properties && git commit -m "Java 8"
+
+$ git push heroku main
+...
+-----> Java app detected
+-----> Installing OpenJDK 1.8... done
+-----> Installing Maven 3.3.3... done
+...
+    java.runtime.version=1.8
+maven.version=3.3.9
+    $ heroku config:set MAVEN_CUSTOM_GOALS="clean package"
+$ heroku config:set MAVEN_CUSTOM_OPTS="--update-snapshots -DskipTests=true"
+$ heroku config:set MAVEN_JAVA_OPTS="-Xss2g"
+    # Create a new Heroku app that uses your buildpack
+heroku create --buildpack <your-github-url>
+
+# Configure an existing Heroku app to use your buildpack
+heroku buildpacks:set <your-github-url>
+
+# You can also use a git branch!
+heroku buildpacks:set <your-github-url>#your-branch
+for DIR in ".m2" ".maven" ; do
+  cp -r $CACHE_DIR/$DIR $BUILD_DIR/$DIR
+done
+$ heroku run bash
+$ ls -al
+$ circleci local execute --job hatchet-heroku-18 \
+    --env HEROKU_API_USER=$(heroku whoami) \
+    --env HEROKU_API_KEY=$(heroku auth:token)
 public class Main {
     public static class actionClass {
         public static void main(String[] args) throws InterruptedException, IOException {
